@@ -1,25 +1,15 @@
-FROM alpine:3.6
+FROM alpine:3.6 
 
 ENV VERSION v3.2.0
-
-MAINTAINER Trevor Hartman <trevorhartman@gmail.com>
 
 WORKDIR /
 
 # Enable SSL
-RUN apk --update add ca-certificates wget python curl tar jq
+RUN apk --update add ca-certificates wget curl tar jq git bash
 
-# Install gcloud and kubectl
-# kubectl will be available at /google-cloud-sdk/bin/kubectl
-# This is added to $PATH
+# Install kubectl
 ENV HOME /
-ENV PATH /google-cloud-sdk/bin:$PATH
-ENV CLOUDSDK_PYTHON_SITEPACKAGES 1
-RUN wget https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.zip && unzip google-cloud-sdk.zip && rm google-cloud-sdk.zip
-RUN google-cloud-sdk/install.sh --usage-reporting=true --path-update=true --bash-completion=true --rc-path=/.bashrc --additional-components app kubectl alpha beta
-# Disable updater check for the whole installation.
-# Users won't be bugged with notifications to update to the latest version of gcloud.
-RUN google-cloud-sdk/bin/gcloud config set --installation component_manager/disable_update_check true
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x kubectl && mv kubectl /usr/local/bin
 
 # Install Helm
 ENV FILENAME helm-${VERSION}-linux-amd64.tar.gz
@@ -32,10 +22,6 @@ RUN curl -o /tmp/$FILENAME ${HELM_URL} \
   && mv /tmp/linux-amd64/helm /bin/helm \
   && rm -rf /tmp
 
-# Helm plugins require git
-# helm-diff requires bash, curl
-RUN apk --update add git bash
-
 # Install envsubst [better than using 'sed' for yaml substitutions]
 ENV BUILD_DEPS="gettext"  \
     RUNTIME_DEPS="libintl"
@@ -47,11 +33,20 @@ RUN set -x && \
     apk del build_deps
 
 # Install Helm plugins
-RUN helm init
 # workaround for an issue in updating the binary of `helm-diff`
 ENV HELM_PLUGIN_DIR /.helm/plugins/helm-diff
 # Plugin is downloaded to /tmp, which must exist
 RUN mkdir /tmp
-RUN helm plugin install https://github.com/viglesiasce/helm-gcs.git
 RUN helm plugin install https://github.com/databus23/helm-diff
 RUN helm plugin install https://github.com/helm/helm-2to3
+
+
+# Install kustomize
+RUN curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash && mv kustomize /usr/local/bin
+
+# Install kubeval
+RUN wget -q https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz && tar xf kubeval-linux-amd64.tar.gz && mv kubeval /usr/local/bin && rm kubeval-linux-amd64.tar.gz
+
+# Install cattlectl
+RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattlectl-v1.3.0-linux.tar.gz && tar xf cattlectl-v1.3.0-linux.tar.gz && mv build/linux/cattlectl /usr/local/bin && rm cattlectl-v1.3.0-linux.tar.gz
+
