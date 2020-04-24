@@ -1,6 +1,6 @@
 # helm-docker
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/ersitzt/helm-docker.svg?style=flat-square)](https://hub.docker.com/r/ersitzt/helm-docker/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ersitzt/helm-docker.svg?style=flat-square)](https://hub.docker.com/r/ersitzt/helm-docker/)[![Docker Build Status](https://img.shields.io/docker/cloud/build/ersitzt/helm-docker?style=plastic)](https://hub.docker.com/r/ersitzt/helm-docker/)
 
 Removed gcloud stuff
 
