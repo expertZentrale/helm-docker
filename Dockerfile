@@ -5,7 +5,7 @@ ENV VERSION v3.2.0
 WORKDIR /
 
 # Enable SSL
-RUN apk --update add ca-certificates wget curl tar jq git bash
+RUN apk --update add ca-certificates wget curl tar jq git bash perl-utils
 
 # Install kubectl
 ENV HOME /
@@ -50,6 +50,6 @@ RUN wget -q https://github.com/instrumenta/kubeval/releases/latest/download/kube
 # Install cattlectl
 RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattlectl-v1.3.0-linux.tar.gz && tar xf cattlectl-v1.3.0-linux.tar.gz && mv build/linux/cattlectl /usr/local/bin && rm cattlectl-v1.3.0-linux.tar.gz
 
-# Install k14s ( kapp, ytt, and stuff)
-RUN curl -L https://k14s.io/install.sh | bash
+# Install kapp
+RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.25.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
 
