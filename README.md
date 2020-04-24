@@ -3,6 +3,9 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/devth/helm.svg?style=flat-square)](https://hub.docker.com/r/devth/helm/)
 
 Removed gcloud stuff
+Added Rancher support with cattlectl
+Added kustomize / kapp for managing deployments
+Added kubeval to check yaml
 
 ## Usage
 

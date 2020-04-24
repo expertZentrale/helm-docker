@@ -50,3 +50,6 @@ RUN wget -q https://github.com/instrumenta/kubeval/releases/latest/download/kube
 # Install cattlectl
 RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattlectl-v1.3.0-linux.tar.gz && tar xf cattlectl-v1.3.0-linux.tar.gz && mv build/linux/cattlectl /usr/local/bin && rm cattlectl-v1.3.0-linux.tar.gz
 
+# Install k14s ( kapp, ytt, and stuff)
+RUN curl -L https://k14s.io/install.sh | bash
+
