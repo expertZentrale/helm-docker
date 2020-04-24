@@ -2,18 +2,22 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/devth/helm.svg?style=flat-square)](https://hub.docker.com/r/devth/helm/)
 
+Removed gcloud stuff
+
 ## Usage
 
 This Docker image includes `helm` along with:
 
-- `gcloud`
 - `kubectl`
+- `kustomize`
+- `kapp`
+- `kubeval`
+- `cattlectl` for Rancher
 - `envsubst`
 - `jq`
 
 And `helm` plugins:
 
-- `viglesiasce/helm-gcs.git`
 - `databus23/helm-diff`
 - `helm/helm-2to3`
 
