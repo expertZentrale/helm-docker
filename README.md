@@ -1,11 +1,15 @@
 # helm-docker
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/devth/helm.svg?style=flat-square)](https://hub.docker.com/r/devth/helm/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ersitzt/helm-docker.svg?style=flat-square)](https://hub.docker.com/r/ersitzt/helm-docker/)[![Docker Build Status](https://img.shields.io/docker/cloud/build/ersitzt/helm-docker?style=flat-square)](https://hub.docker.com/r/ersitzt/helm-docker/)
 
 Removed gcloud stuff
 Added Rancher support with cattlectl
 Added kustomize / kapp for managing deployments
 Added kubeval to check yaml
+
+Original image here
+
+https://hub.docker.com/r/devth/helm/
 
 ## Usage
 
