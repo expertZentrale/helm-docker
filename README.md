@@ -4,6 +4,10 @@
 
 Removed gcloud stuff
 
+Original image here
+
+https://hub.docker.com/r/devth/helm/
+
 ## Usage
 
 This Docker image includes `helm` along with:
