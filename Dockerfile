@@ -53,3 +53,4 @@ RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattle
 # Install kapp
 RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.25.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
 
+COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
