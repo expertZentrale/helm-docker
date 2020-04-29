@@ -6,6 +6,7 @@ Removed gcloud stuff
 Added Rancher support with cattlectl
 Added kustomize / kapp for managing deployments
 Added kubeval to check yaml
+Added terraform
 
 Original image here
 
@@ -22,6 +23,7 @@ This Docker image includes `helm` along with:
 - `cattlectl` for Rancher
 - `envsubst`
 - `jq`
+- `terraform`
 
 And `helm` plugins:
 
