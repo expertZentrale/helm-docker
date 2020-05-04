@@ -36,7 +36,7 @@ RUN set -x && \
 # workaround for an issue in updating the binary of `helm-diff`
 ENV HELM_PLUGIN_DIR /.helm/plugins/helm-diff
 # Plugin is downloaded to /tmp, which must exist
-RUN mkdir /tmp
+RUN mkdir /tmp /terraform-plugins
 RUN helm plugin install https://github.com/databus23/helm-diff
 RUN helm plugin install https://github.com/helm/helm-2to3
 
@@ -54,3 +54,5 @@ RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattle
 RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.25.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
 
 COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
+
+RUN wget -q https://releases.hashicorp.com/terraform-provider-rancher2/1.8.3/terraform-provider-rancher2_1.8.3_linux_amd64.zip && unzip terraform-provider-rancher2_1.8.3_linux_amd64.zip -d /terraform-plugins
