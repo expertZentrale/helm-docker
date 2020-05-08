@@ -49,7 +49,7 @@ RUN curl -sLf https://github.com/kubernetes-sigs/kustomize/releases/download/kus
     && tar xf kustomize.tar.gz \
     && mv kustomize /usr/local/bin \
     && chmod +x /usr/local/bin/kustomize \
-    && rm -rf ./*
+    && rm kustomize.tar.gz
 
 # Install kubeval
 RUN wget -q https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz && tar xf kubeval-linux-amd64.tar.gz && mv kubeval /usr/local/bin && rm kubeval-linux-amd64.tar.gz
