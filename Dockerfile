@@ -12,8 +12,7 @@ RUN apk --update add ca-certificates wget curl tar jq git bash perl-utils
 
 # Install kubectl
 ENV HOME /
-RUN curl -sLf https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
-    && chmod +x /usr/local/bin/kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x kubectl && mv kubectl /usr/local/bin
 
 # Install Helm
 ENV FILENAME helm-${HELM_VERSION}-linux-amd64.tar.gz
