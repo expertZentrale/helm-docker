@@ -24,7 +24,10 @@ This Docker image includes `helm` along with:
 - `envsubst`
 - `jq`
 - `terraform`
-  - with preinstalled rancher2 provider plugin use with `terraform init -input=false -plugin-dir=/terraform-plugins`
+  - with preinstalled plugins, use with `terraform init -input=false -plugin-dir=/terraform-plugins`
+  - rancher2
+  - kubernetes
+  - vault
 
 And `helm` plugins:
 
