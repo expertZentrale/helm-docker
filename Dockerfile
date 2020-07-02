@@ -1,6 +1,6 @@
 FROM alpine:3.6 
 
-ENV HELM_VERSION v3.2.3
+ENV HELM_VERSION v3.2.4
 ENV KUBEVAL_VERSION=0.15.0
 ENV KUBECTL_VERSION=1.18.2
 ENV KUSTOMIZE_VERSION=3.5.4
@@ -60,9 +60,13 @@ RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattle
 # Install kapp
 RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.30.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
 
+# Install Vault + Terraform
 COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
 COPY --from=vault:latest /bin/vault /bin/vault
 
 RUN wget -q https://releases.hashicorp.com/terraform-provider-rancher2/1.8.3/terraform-provider-rancher2_1.8.3_linux_amd64.zip && unzip terraform-provider-rancher2_1.8.3_linux_amd64.zip -d /terraform-plugins
 RUN wget -q https://releases.hashicorp.com/terraform-provider-kubernetes/1.11.2/terraform-provider-kubernetes_1.11.2_linux_amd64.zip && unzip terraform-provider-kubernetes_1.11.2_linux_amd64.zip -d /terraform-plugins
 RUN wget -q https://releases.hashicorp.com/terraform-provider-vault/2.10.0/terraform-provider-vault_2.10.0_linux_amd64.zip && unzip terraform-provider-vault_2.10.0_linux_amd64.zip -d /terraform-plugins
+
+# Install yq
+COPY --from=mikefarah/yq /usr/bin/yq /bin/yq

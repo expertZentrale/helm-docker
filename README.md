@@ -23,6 +23,7 @@ This Docker image includes `helm` along with:
 - `cattlectl` for Rancher
 - `envsubst`
 - `jq`
+- `yq`
 - `terraform`
   - with preinstalled plugins, use with `terraform init -input=false -plugin-dir=/terraform-plugins`
   - rancher2
