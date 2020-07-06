@@ -7,6 +7,10 @@ Added Rancher support with cattlectl
 Added kustomize / kapp for managing deployments
 Added kubeval to check yaml
 Added terraform
+Added vault
+Added istioctl
+Added kapp
+Added yq 
 
 Original image here
 
@@ -17,6 +21,7 @@ https://hub.docker.com/r/devth/helm/
 This Docker image includes `helm` along with:
 
 - `kubectl`
+- `istioctl`
 - `kustomize`
 - `kapp`
 - `kubeval`

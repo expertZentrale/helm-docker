@@ -39,9 +39,8 @@ RUN set -x && \
 # workaround for an issue in updating the binary of `helm-diff`
 ENV HELM_PLUGIN_DIR /.helm/plugins/helm-diff
 # Plugin is downloaded to /tmp, which must exist
-RUN mkdir /tmp /terraform-plugins
-RUN helm plugin install https://github.com/databus23/helm-diff
-RUN helm plugin install https://github.com/helm/helm-2to3
+RUN mkdir /tmp 
+RUN helm plugin install https://github.com/databus23/helm-diff && helm plugin install https://github.com/helm/helm-2to3 && rm -rf /tmp
 
 
 # Install kustomize
@@ -64,9 +63,13 @@ RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.30.0/kapp-lin
 COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
 COPY --from=vault:latest /bin/vault /bin/vault
 
-RUN wget -q https://releases.hashicorp.com/terraform-provider-rancher2/1.8.3/terraform-provider-rancher2_1.8.3_linux_amd64.zip && unzip terraform-provider-rancher2_1.8.3_linux_amd64.zip -d /terraform-plugins
-RUN wget -q https://releases.hashicorp.com/terraform-provider-kubernetes/1.11.2/terraform-provider-kubernetes_1.11.2_linux_amd64.zip && unzip terraform-provider-kubernetes_1.11.2_linux_amd64.zip -d /terraform-plugins
-RUN wget -q https://releases.hashicorp.com/terraform-provider-vault/2.10.0/terraform-provider-vault_2.10.0_linux_amd64.zip && unzip terraform-provider-vault_2.10.0_linux_amd64.zip -d /terraform-plugins
+RUN mkdir /terraform-plugins
+RUN wget -q https://releases.hashicorp.com/terraform-provider-rancher2/1.8.3/terraform-provider-rancher2_1.8.3_linux_amd64.zip && unzip terraform-provider-rancher2_1.8.3_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-rancher2_1.8.3_linux_amd64.zip
+RUN wget -q https://releases.hashicorp.com/terraform-provider-kubernetes/1.11.2/terraform-provider-kubernetes_1.11.2_linux_amd64.zip && unzip terraform-provider-kubernetes_1.11.2_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-kubernetes_1.11.2_linux_amd64.zip
+RUN wget -q https://releases.hashicorp.com/terraform-provider-vault/2.10.0/terraform-provider-vault_2.10.0_linux_amd64.zip && unzip terraform-provider-vault_2.10.0_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-vault_2.10.0_linux_amd64.zip
 
 # Install yq
 COPY --from=mikefarah/yq /usr/bin/yq /bin/yq
+
+# Install istioctl
+COPY --from=istio/istioctl:1.6.4-distroless /usr/local/bin/istioctl /bin/istioctl
