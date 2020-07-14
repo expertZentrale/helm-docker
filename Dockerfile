@@ -57,7 +57,7 @@ RUN wget -q https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_V
 RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattlectl-v1.3.0-linux.tar.gz && tar xf cattlectl-v1.3.0-linux.tar.gz && mv build/linux/cattlectl /usr/local/bin && rm cattlectl-v1.3.0-linux.tar.gz
 
 # Install kapp
-RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.30.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
+RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.31.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
 
 # Install Vault + Terraform
 COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
