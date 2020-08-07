@@ -64,7 +64,7 @@ COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
 COPY --from=vault:latest /bin/vault /bin/vault
 
 RUN mkdir /terraform-plugins
-RUN wget -q https://releases.hashicorp.com/terraform-provider-rancher2/1.8.3/terraform-provider-rancher2_1.8.3_linux_amd64.zip && unzip terraform-provider-rancher2_1.8.3_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-rancher2_1.8.3_linux_amd64.zip
+RUN wget -q https://releases.hashicorp.com/terraform-provider-rancher2/1.10.0/terraform-provider-rancher2_1.10.0_linux_amd64.zip && unzip terraform-provider-rancher2_1.10.0_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-rancher2_1.10.0_linux_amd64.zip
 RUN wget -q https://releases.hashicorp.com/terraform-provider-kubernetes/1.11.2/terraform-provider-kubernetes_1.11.2_linux_amd64.zip && unzip terraform-provider-kubernetes_1.11.2_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-kubernetes_1.11.2_linux_amd64.zip
 RUN wget -q https://releases.hashicorp.com/terraform-provider-vault/2.10.0/terraform-provider-vault_2.10.0_linux_amd64.zip && unzip terraform-provider-vault_2.10.0_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-vault_2.10.0_linux_amd64.zip
 
