@@ -59,6 +59,10 @@ RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattle
 # Install kapp
 RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.31.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
 
+# Install vht Vault Helper Tools
+
+RUN wget -q https://github.com/ilijamt/vht/releases/download/v0.4.3/vht_linux_x86_64.tar.gz && tar xf vht_linux_x86_64.tar.gz && mv vht /usr/local/bin && rm vht_linux_x86_64.tar.gz
+
 # Install Vault + Terraform
 COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
 COPY --from=vault:latest /bin/vault /bin/vault
