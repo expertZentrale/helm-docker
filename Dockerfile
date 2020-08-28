@@ -54,7 +54,7 @@ RUN curl -sLf https://github.com/kubernetes-sigs/kustomize/releases/download/kus
 RUN wget -q https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz && tar xf kubeval-linux-amd64.tar.gz && mv kubeval /usr/local/bin && rm kubeval-linux-amd64.tar.gz
 
 # Install cattlectl
-RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattlectl-v1.3.0-linux.tar.gz && tar xf cattlectl-v1.3.0-linux.tar.gz && mv build/linux/cattlectl /usr/local/bin && rm cattlectl-v1.3.0-linux.tar.gz
+# RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattlectl-v1.3.0-linux.tar.gz && tar xf cattlectl-v1.3.0-linux.tar.gz && mv build/linux/cattlectl /usr/local/bin && rm cattlectl-v1.3.0-linux.tar.gz
 
 # Install kapp
 RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.31.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
