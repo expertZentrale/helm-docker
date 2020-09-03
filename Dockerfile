@@ -1,6 +1,6 @@
 FROM alpine:3.6 
 
-ENV HELM_VERSION v3.3.0
+ENV HELM_VERSION v3.3.1
 ENV KUBEVAL_VERSION=0.15.0
 ENV KUBECTL_VERSION=1.18.5
 ENV KUSTOMIZE_VERSION=3.8.0
@@ -67,10 +67,11 @@ RUN wget -q https://github.com/ilijamt/vht/releases/download/v0.4.3/vht_linux_x8
 COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
 COPY --from=vault:latest /bin/vault /bin/vault
 
-RUN mkdir /terraform-plugins
-RUN wget -q https://releases.hashicorp.com/terraform-provider-rancher2/1.10.0/terraform-provider-rancher2_1.10.0_linux_amd64.zip && unzip terraform-provider-rancher2_1.10.0_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-rancher2_1.10.0_linux_amd64.zip
-RUN wget -q https://releases.hashicorp.com/terraform-provider-kubernetes/1.11.2/terraform-provider-kubernetes_1.11.2_linux_amd64.zip && unzip terraform-provider-kubernetes_1.11.2_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-kubernetes_1.11.2_linux_amd64.zip
-RUN wget -q https://releases.hashicorp.com/terraform-provider-vault/2.10.0/terraform-provider-vault_2.10.0_linux_amd64.zip && unzip terraform-provider-vault_2.10.0_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-vault_2.10.0_linux_amd64.zip
+# upgrade terraform 0.13
+#RUN mkdir /terraform-plugins
+#RUN wget -q https://releases.hashicorp.com/terraform-provider-rancher2/1.10.0/terraform-provider-rancher2_1.10.0_linux_amd64.zip && unzip terraform-provider-rancher2_1.10.0_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-rancher2_1.10.0_linux_amd64.zip
+#RUN wget -q https://releases.hashicorp.com/terraform-provider-kubernetes/1.11.2/terraform-provider-kubernetes_1.11.2_linux_amd64.zip && unzip terraform-provider-kubernetes_1.11.2_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-kubernetes_1.11.2_linux_amd64.zip
+#RUN wget -q https://releases.hashicorp.com/terraform-provider-vault/2.10.0/terraform-provider-vault_2.10.0_linux_amd64.zip && unzip terraform-provider-vault_2.10.0_linux_amd64.zip -d /terraform-plugins && rm terraform-provider-vault_2.10.0_linux_amd64.zip
 
 # Install yq
 COPY --from=mikefarah/yq /usr/bin/yq /bin/yq
