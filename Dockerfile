@@ -1,9 +1,10 @@
 FROM alpine:3.6 
 
-ENV HELM_VERSION v3.3.2
+ENV HELM_VERSION v3.3.4
 ENV KUBEVAL_VERSION=0.15.0
 ENV KUBECTL_VERSION=1.18.5
 ENV KUSTOMIZE_VERSION=3.8.3
+ENV KAPP_VERSION=v0.34.0
 
 WORKDIR /
 
@@ -57,7 +58,7 @@ RUN wget -q https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_V
 # RUN wget -q https://github.com/bitgrip/cattlectl/releases/download/v1.3.0/cattlectl-v1.3.0-linux.tar.gz && tar xf cattlectl-v1.3.0-linux.tar.gz && mv build/linux/cattlectl /usr/local/bin && rm cattlectl-v1.3.0-linux.tar.gz
 
 # Install kapp
-RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/v0.31.0/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
+RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/${KAPP_VERSION}/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
 
 # Install vht Vault Helper Tools
 
@@ -77,4 +78,4 @@ COPY --from=vault:latest /bin/vault /bin/vault
 COPY --from=mikefarah/yq /usr/bin/yq /bin/yq
 
 # Install istioctl
-COPY --from=istio/istioctl:1.6.4-distroless /usr/local/bin/istioctl /bin/istioctl
+# COPY --from=istio/istioctl:1.6.4-distroless /usr/local/bin/istioctl /bin/istioctl
