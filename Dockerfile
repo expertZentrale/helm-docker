@@ -64,9 +64,10 @@ RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/${KAPP_VERSION}/
 
 RUN wget -q https://github.com/ilijamt/vht/releases/download/v0.4.3/vht_linux_x86_64.tar.gz && tar xf vht_linux_x86_64.tar.gz && mv vht /usr/local/bin && rm vht_linux_x86_64.tar.gz
 
-# Install Vault + Terraform
+# Install Vault + Terraform + Consul-Template
 COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
 COPY --from=vault:latest /bin/vault /bin/vault
+COPY --from=hashicorp/consul-template:alpine /bin/consul-template /bin/consul-template
 
 # upgrade terraform 0.13
 #RUN mkdir /terraform-plugins
