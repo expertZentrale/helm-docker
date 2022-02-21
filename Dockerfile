@@ -1,11 +1,11 @@
 FROM alpine:3.6 
 
-ENV HELM_VERSION v3.7.1
+ENV HELM_VERSION v3.8.0
 ENV KUBEVAL_VERSION=v0.16.1
 # kubectl_version is not used... installs latest stable
 ENV KUBECTL_VERSION=v1.22.2
-ENV KUSTOMIZE_VERSION=4.4.0
-ENV KAPP_VERSION=v0.42.0
+ENV KUSTOMIZE_VERSION=4.5.2
+ENV KAPP_VERSION=v0.46.0
 
 WORKDIR /
 
@@ -56,10 +56,9 @@ RUN curl -sLf https://github.com/kubernetes-sigs/kustomize/releases/download/kus
 RUN wget -q https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz && tar xf kubeval-linux-amd64.tar.gz && mv kubeval /usr/local/bin && rm kubeval-linux-amd64.tar.gz
 
 # Install kapp
-RUN wget -nv -O- https://github.com/k14s/kapp/releases/download/${KAPP_VERSION}/kapp-linux-amd64  > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
+RUN wget -nv -O- https://github.com/vmware-tanzu/carvel-kapp/releases/download/${KAPP_VERSION}/kapp-linux-amd64 > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
 
 # Install vht Vault Helper Tools
-
 RUN wget -q https://github.com/ilijamt/vht/releases/download/v0.4.3/vht_linux_x86_64.tar.gz && tar xf vht_linux_x86_64.tar.gz && mv vht /usr/local/bin && rm vht_linux_x86_64.tar.gz
 
 # Install Vault + Terraform + Consul-Template
