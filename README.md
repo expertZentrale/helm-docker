@@ -12,7 +12,6 @@ Added istioctl
 Added kapp
 Added yq 
 
-
 Original image here
 
 https://hub.docker.com/r/devth/helm/
