@@ -5,7 +5,7 @@ ENV KUBEVAL_VERSION=v0.16.1
 # kubectl_version is not used... installs latest stable
 ENV KUBECTL_VERSION=v1.22.2
 ENV KUSTOMIZE_VERSION=4.5.2
-ENV KAPP_VERSION=v0.46.0
+ENV KAPP_VERSION=v0.47.0
 
 WORKDIR /
 
