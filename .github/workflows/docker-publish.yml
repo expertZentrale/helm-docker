@@ -25,7 +25,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    if: GitHub.ref == 'refs/heads/master' || GitHub.event_name == 'release'
+    if: GitHub.ref == 'refs/heads/master' || GitHub.event_name == 'release' || startsWith(github.event.ref, 'refs/tags/v')
 
     permissions:
       contents: read
