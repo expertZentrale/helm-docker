@@ -1,11 +1,11 @@
-FROM alpine:3.6 
+FROM alpine:3.19.0 
 
-ENV HELM_VERSION v3.9.0
+ENV HELM_VERSION v3.13.3
 ENV KUBEVAL_VERSION=v0.16.1
 # kubectl_version is not used... installs latest stable
-ENV KUBECTL_VERSION=v1.22.2
-ENV KUSTOMIZE_VERSION=4.5.2
-ENV KAPP_VERSION=v0.48.0
+ENV KUBECTL_VERSION=v1.29.0
+ENV KUSTOMIZE_VERSION=5.3.0
+ENV KAPP_VERSION=v0.59.2
 
 WORKDIR /
 
@@ -63,7 +63,7 @@ RUN wget -q https://github.com/ilijamt/vht/releases/download/v0.4.3/vht_linux_x8
 
 # Install Vault + Terraform + Consul-Template
 COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
-COPY --from=vault:latest /bin/vault /bin/vault
+COPY --from=hashicorp/vault:latest /bin/vault /bin/vault
 COPY --from=hashicorp/consul-template:alpine /bin/consul-template /bin/consul-template
 
 # Install yq
