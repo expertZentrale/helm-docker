@@ -1,102 +1,74 @@
 # helm-docker
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/ersitzt/helm-docker.svg?style=flat-square)](https://hub.docker.com/r/ersitzt/helm-docker/)[![Docker Build Status](https://img.shields.io/docker/cloud/build/ersitzt/helm-docker?style=flat-square)](https://hub.docker.com/r/ersitzt/helm-docker/)
+An Alpine-based toolkit for Kubernetes deployment pipelines in GitLab CI/CD.
+Originally based on [devth/helm](https://hub.docker.com/r/devth/helm/).
 
-Removed gcloud stuff
-Added Rancher support with cattlectl
-Added kustomize / kapp for managing deployments
-Added kubeval to check yaml
-Added terraform
-Added vault
-Added istioctl
-Added kapp
-Added yq 
+## Included tools
 
-Original image here
+Tool and image versions are pinned in the [Dockerfile](Dockerfile); system
+packages are installed from the selected Alpine release.
 
-https://hub.docker.com/r/devth/helm/
-
-## Usage
-
-This Docker image includes `helm` along with:
-
+- `helm` (Helm 3, preserving compatibility with existing pipelines)
 - `kubectl`
-- `istioctl`
 - `kustomize`
 - `kapp`
 - `kubeval`
-- `cattlectl` for Rancher
-- `envsubst`
-- `jq`
-- `yq`
 - `terraform`
-  - with preinstalled plugins, use with `terraform init -input=false -plugin-dir=/terraform-plugins`
-  - rancher2
-  - kubernetes
-  - vault
+- `vault`
+- `consul-template`
+- `vht` (Vault Helper Tools)
+- `envsubst`, `jq`, and `yq`
+- `bash`, `git`, `curl`, `wget`, `tar`, and `perl-utils`
 
-And `helm` plugins:
+Helm plugins:
 
-- `databus23/helm-diff`
-- `helm/helm-2to3`
+- [helm-diff](https://github.com/databus23/helm-diff)
+- [helm-2to3](https://github.com/helm/helm-2to3) (deprecated upstream; retained
+  for legacy Helm 2 migrations)
 
-## Docker
+`kubeval` is retained at its last published release. It is no longer actively
+maintained and its default schemas may not cover recent Kubernetes versions.
 
-Docker images are automatically built on [Docker
-Hub](https://hub.docker.com/r/devth/helm/):
+`gcloud`, `cattlectl`, and `istioctl` are not included. Terraform providers are
+not preinstalled; use `terraform init -input=false` to install the providers
+declared by your project.
 
-- Docker tags correspond to [Helm
-  release](https://github.com/helm/helm/releases) versions.
-- `latest` is always the latest fully released version (non-beta/RC).
-- `master` is always the latest commit on master.
+## GitLab CI/CD usage
 
-### Building
-
-To test a local build:
-
-```bash
-docker build -t devth/helm .
+```yaml
+deploy:
+  image:
+    name: ghcr.io/expertzentrale/helm-docker:latest
+    entrypoint: [""]
+  stage: deploy
+  script:
+    - helm version --short
+    - kubectl version --client
+    - helm upgrade --install my-app ./chart --namespace my-app --create-namespace
 ```
 
-## Release procedure
+Provide cluster credentials through your pipeline's protected CI/CD variables
+or GitLab Kubernetes integration. Choose a `kubectl` version within one minor
+version of your Kubernetes API server.
 
-Use the following to:
+The image targets Linux AMD64. For reproducible pipelines, use a published
+release tag or image digest instead of `latest`.
 
-- Bump `VERSION` in the [Dockerfile](Dockerfile)
-- Commit and create tag matching the version
+## Images and releases
 
-NB: the `sed` syntax works with MacOS built-in `sed`.
+The [GitHub Actions workflow](.github/workflows/docker-publish.yml) publishes
+`ghcr.io/expertzentrale/helm-docker`:
 
-```bash
-gh issue list
-VERSION=v3.2.0
-ISSUE=88
-# works on macOS
-sed -i '' "3s/.*/ENV VERSION $VERSION/" Dockerfile
-git diff # ensure it looks good
-git commit -am "Bump to $VERSION; fix #$ISSUE"
-git tag $VERSION
-git push && git push --tags
-```
+- `latest` is rebuilt from `master` on pushes and the daily schedule.
+- Git tags matching `v*.*.*` are published as matching image tags.
 
-Optionally test building the image before pushing:
+To release an update, change the pinned versions in the Dockerfile, build and
+test the image, then commit the changes and push a new version tag. Release
+tags identify the complete toolkit, not just the Helm version.
+
+## Local build
 
 ```bash
-docker build .
-```
-
-### Re-release
-
-To re-build a particular tag we need to delete the git tag locally and remotely:
-
-```bash
-git push origin :$VERSION
-git tag -d $VERSION
-```
-
-Then re-tag and push:
-
-```bash
-git tag $VERSION
-git push --tags
+docker build --platform linux/amd64 -t helm-docker .
+docker run --rm helm-docker sh -ec 'helm version --short; kubectl version --client; helm plugin list'
 ```
