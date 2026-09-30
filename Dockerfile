@@ -1,73 +1,66 @@
-FROM alpine:3.19.0 
+FROM alpine:3.24.2
 
-ENV HELM_VERSION v3.13.3
+ENV HELM_VERSION=v3.22.0
 ENV KUBEVAL_VERSION=v0.16.1
-# kubectl_version is not used... installs latest stable
-ENV KUBECTL_VERSION=v1.29.0
-ENV KUSTOMIZE_VERSION=5.3.0
-ENV KAPP_VERSION=v0.59.2
+ENV KUBECTL_VERSION=v1.37.1
+ENV KUSTOMIZE_VERSION=5.8.1
+ENV KAPP_VERSION=v0.65.4
+ENV VHT_VERSION=0.6.0
+ENV HELM_DIFF_VERSION=v3.15.15
+ENV HELM_2TO3_VERSION=v0.11.0
 
 WORKDIR /
 
 # Enable SSL
-RUN apk --update add ca-certificates wget curl tar jq git bash perl-utils
+RUN apk add --no-cache ca-certificates wget curl tar jq git bash perl-utils gettext-envsubst
 
 # Install kubectl
-ENV HOME /
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x kubectl && mv kubectl /usr/local/bin
+ENV HOME=/
+RUN curl -fsSL "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -o /tmp/kubectl \
+    && curl -fsSL "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256" -o /tmp/kubectl.sha256 \
+    && echo "$(cat /tmp/kubectl.sha256)  /tmp/kubectl" | sha256sum -c - \
+    && chmod +x /tmp/kubectl \
+    && mv /tmp/kubectl /usr/local/bin/kubectl \
+    && rm /tmp/kubectl.sha256
 
 # Install Helm
-ENV FILENAME helm-${HELM_VERSION}-linux-amd64.tar.gz
-ENV HELM_URL https://get.helm.sh/${FILENAME}
+ENV FILENAME=helm-${HELM_VERSION}-linux-amd64.tar.gz
+ENV HELM_URL=https://get.helm.sh/${FILENAME}
 
-RUN echo $HELM_URL
-
-RUN curl -o /tmp/$FILENAME ${HELM_URL} \
-  && tar -zxvf /tmp/${FILENAME} -C /tmp \
-  && mv /tmp/linux-amd64/helm /bin/helm \
-  && rm -rf /tmp
-
-# Install envsubst [better than using 'sed' for yaml substitutions]
-ENV BUILD_DEPS="gettext"  \
-    RUNTIME_DEPS="libintl"
-
-RUN set -x && \
-    apk add --update $RUNTIME_DEPS && \
-    apk add --virtual build_deps $BUILD_DEPS &&  \
-    cp /usr/bin/envsubst /usr/local/bin/envsubst && \
-    apk del build_deps
+RUN curl -fsSL "${HELM_URL}" -o "/tmp/${FILENAME}" \
+    && curl -fsSL "${HELM_URL}.sha256sum" -o "/tmp/${FILENAME}.sha256sum" \
+    && (cd /tmp && sha256sum -c "${FILENAME}.sha256sum") \
+    && tar -xzf "/tmp/${FILENAME}" -C /tmp \
+    && mv /tmp/linux-amd64/helm /bin/helm \
+    && rm -rf /tmp/linux-amd64 "/tmp/${FILENAME}" "/tmp/${FILENAME}.sha256sum"
 
 # Install Helm plugins
-# workaround for an issue in updating the binary of `helm-diff`
-ENV HELM_PLUGIN_DIR /.helm/plugins/helm-diff
-# Plugin is downloaded to /tmp, which must exist
-RUN mkdir /tmp 
-RUN helm plugin install https://github.com/databus23/helm-diff && helm plugin install https://github.com/helm/helm-2to3 && rm -rf /tmp
-
+RUN helm plugin install https://github.com/databus23/helm-diff --version "${HELM_DIFF_VERSION}" \
+    && helm plugin install https://github.com/helm/helm-2to3 --version "${HELM_2TO3_VERSION}"
 
 # Install kustomize
-RUN curl -sLf https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz -o kustomize.tar.gz\
-    && tar xf kustomize.tar.gz \
-    && mv kustomize /usr/local/bin \
-    && chmod +x /usr/local/bin/kustomize \
-    && rm kustomize.tar.gz
+RUN curl -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" -o /tmp/kustomize.tar.gz \
+    && tar -xzf /tmp/kustomize.tar.gz -C /usr/local/bin kustomize \
+    && rm /tmp/kustomize.tar.gz
 
 # Install kubeval
-RUN wget -q https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz && tar xf kubeval-linux-amd64.tar.gz && mv kubeval /usr/local/bin && rm kubeval-linux-amd64.tar.gz
+RUN curl -fsSL "https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-linux-amd64.tar.gz" -o /tmp/kubeval.tar.gz \
+    && tar -xzf /tmp/kubeval.tar.gz -C /usr/local/bin kubeval \
+    && rm /tmp/kubeval.tar.gz
 
 # Install kapp
-RUN wget -nv -O- https://github.com/vmware-tanzu/carvel-kapp/releases/download/${KAPP_VERSION}/kapp-linux-amd64 > /usr/local/bin/kapp && chmod +x /usr/local/bin/kapp
+RUN curl -fsSL "https://github.com/carvel-dev/kapp/releases/download/${KAPP_VERSION}/kapp-linux-amd64" -o /usr/local/bin/kapp \
+    && chmod +x /usr/local/bin/kapp
 
 # Install vht Vault Helper Tools
-RUN wget -q https://github.com/ilijamt/vht/releases/download/v0.4.3/vht_linux_x86_64.tar.gz && tar xf vht_linux_x86_64.tar.gz && mv vht /usr/local/bin && rm vht_linux_x86_64.tar.gz
+RUN curl -fsSL "https://github.com/ilijamt/vht/releases/download/v${VHT_VERSION}/vht_${VHT_VERSION}_linux_amd64.tar.gz" -o /tmp/vht.tar.gz \
+    && tar -xzf /tmp/vht.tar.gz -C /usr/local/bin vht \
+    && rm /tmp/vht.tar.gz
 
 # Install Vault + Terraform + Consul-Template
-COPY --from=hashicorp/terraform:latest /bin/terraform /bin/terraform
-COPY --from=hashicorp/vault:latest /bin/vault /bin/vault
-COPY --from=hashicorp/consul-template:alpine /bin/consul-template /bin/consul-template
+COPY --from=hashicorp/terraform:1.16.4 /bin/terraform /bin/terraform
+COPY --from=hashicorp/vault:2.1.1 /bin/vault /bin/vault
+COPY --from=hashicorp/consul-template:0.43.0 /bin/consul-template /bin/consul-template
 
 # Install yq
-COPY --from=mikefarah/yq /usr/bin/yq /bin/yq
-
-# Install istioctl
-# COPY --from=istio/istioctl:1.6.4-distroless /usr/local/bin/istioctl /bin/istioctl
+COPY --from=mikefarah/yq:4.54.1 /usr/bin/yq /bin/yq
